@@ -1,1 +1,1 @@
-# Learing-OpenCV3-Exercise
+# Learning-OpenCV3-Exercise
