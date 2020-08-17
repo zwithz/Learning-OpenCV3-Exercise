@@ -12,7 +12,7 @@
 using namespace cv;
 
 void ex2_1() {
-    cv::Mat img = cv::imread("./img/zju.png", -1);
+    cv::Mat img = cv::imread("./assets/img/zju.png", -1);
     if (img.empty()) return;
     cv::namedWindow("Example1", cv::WINDOW_AUTOSIZE);
     cv::imshow("Example1", img);
@@ -21,7 +21,7 @@ void ex2_1() {
 }
 
 void ex2_2() {
-    Mat img = imread("./img/zju.png", -1);
+    Mat img = imread("./assets/img/zju.png", -1);
     if (img.empty()) return;
     namedWindow("Example1", WINDOW_AUTOSIZE);
     imshow("Example1", img);
