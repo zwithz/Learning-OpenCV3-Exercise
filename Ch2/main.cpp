@@ -216,7 +216,73 @@ void ex11() {
     capture.release();
 }
 
+// Exercise 3 & 4
+void exercise3And4() {
+    namedWindow("Exercise3", WINDOW_AUTOSIZE);
+    namedWindow("DownSampled", WINDOW_AUTOSIZE);
+
+    VideoCapture capture("../assets/video/Sampling.avi");
+
+    double fps = capture.get(CAP_PROP_FPS);
+    Size size((int)(capture.get(CAP_PROP_FRAME_WIDTH) + 1) / 2, (int)(capture.get(CAP_PROP_FRAME_HEIGHT) + 1) / 2);
+
+    VideoWriter writer;
+    writer.open("../assets/video/downsampled.avi", writer.fourcc('M', 'J', 'P', 'G'), fps, size);
+
+    Mat downsampled_frame, bgr_frame;
+    for (;;) {
+        capture >> bgr_frame;
+        if (bgr_frame.empty()) break;
+
+        imshow("Exercise3", bgr_frame);
+
+        pyrDown(bgr_frame, downsampled_frame);
+
+        imshow("DownSampled", downsampled_frame);
+
+        writer << downsampled_frame;
+
+        char c = waitKey(0);
+        if (c == 27) break;
+    }
+    capture.release();
+}
+
+// Exercise 5
+int g_position = 0, g_step = 1;
+VideoCapture g_capture;
+
+void onTrackbarSlideCallback(int pos, void*) {
+    g_capture.set(CAP_PROP_POS_FRAMES, pos);
+    g_step = 1;
+}
+
+void exercise5() {
+    namedWindow("Exercise5", WINDOW_AUTOSIZE);
+    g_capture.open("../assets/video/Sampling.avi");
+    int frames = (int)g_capture.get(CAP_PROP_FRAME_COUNT);
+
+    createTrackbar("Position", "Exercise5", &g_position, frames, onTrackbarSlideCallback);
+
+    Mat frame, downsampled_frame;
+    for (;;) {
+        if (g_step == 1) {
+            g_capture >> frame;
+            if (frame.empty()) break;
+            pyrDown(frame, downsampled_frame);
+            int current_pos = (int)g_capture.get(CAP_PROP_POS_FRAMES);
+            setTrackbarPos("Position", "Exercise5", current_pos - 1);
+            imshow("Exercise5", downsampled_frame);
+            g_step--;
+        }
+        char c = (char)waitKey(10);
+        if (c == 27) {
+            break;
+        }
+    }
+}
+
 int main(int argc, const char* argv[]) {
-    ex11();
+    exercise5();
     return 0;
 }
