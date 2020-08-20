@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
 using namespace cv;
 using namespace std;
 
@@ -103,7 +104,62 @@ void print_matrix(const SparseMat_<T>* sm) {
     }
 }
 
+/**
+ * Exercise 1. Create a 500 × 500 single channel uchar image with every pixel
+ * equal to zero.
+ *     a. Create an ASCII numeric typewriter where you can type numbers into
+ *     your computer and have the number show up in a 20-pixel-high by 10-
+ *     pixel-wide block. As you type, the numbers will display from left to
+ *     right until you hit the end of the image. Then just stop.
+ *     b. Allow for carriage return and backspace.
+ *     c. Allow for arrow keys to edit each number.
+ *     d. Create a key that will convert the resulting image into a color
+ *     image, each number taking on a different color.
+ */
+
+/**
+ * Exercise 2. We want to create a function that makes it efficient to sum up rectangular regions in an image by creating a statistics image where each “pixel” holds the sum of the rectangle from that point to the image origin. These are called integral images and by using just 4 points from the integral image, you can determine the sum of any rectangle in the image.
+ *     a. Create a 100 × 200 single-channel uchar image with random numbers. Create a 100 × 200 single-channel float “integral image” with all members equal to zero.
+ *     b. Fill in each element of the integral image with the corresponding sum of the rectangle from that pixel to the origin in the original uchar image.
+ *     c. How can you do part b) very efficiently in one pass using the integral numbers you’ve already calculated in the integral image plus the new number being added in the original image? Implement this efficient method.
+ *     d. Use the integral image to rapidly calculate the sum of pixels in any rectangle in the original image.
+ *     e. How can you modify the integral image so that you can compute the sum of a 45-degree rotated rectangle in the original image very efficiently? Describe the algorithm.
+ */
+void exercise2() {
+    const int display_width = 100;
+    const int display_height = 200;
+    Mat1b original_image(display_height, display_width);
+    Mat1f integral_image(display_height, display_width);
+    RNG rng(0);
+    rng.fill(original_image, RNG::UNIFORM, 0, 255);
+    integral_image = 0;
+
+    namedWindow("Original Image", WINDOW_AUTOSIZE);
+    imshow("Original Image", original_image);
+
+    for (int i = 0; i < display_height; i++) {
+        integral_image.at<float>(i, 0) = sum(original_image.rowRange(0, i + 1).colRange(0, 1))[0];
+    }
+    for (int i = 0; i < display_width; i++) {
+        integral_image.at<float>(0, i) = sum(original_image.rowRange(0, 1).colRange(0, i + 1))[0];
+    }
+
+    for (int i = 1; i < display_height; i++) {
+        for (int j = 1; j < display_width; j++) {
+            integral_image.at<float>(i, j) = (float)original_image.at<uchar>(i, j) + integral_image.at<float>(i - 1, j) + integral_image.at<float>(i, j - 1) - integral_image.at<float>(i - 1, j - 1);
+        }
+    }
+
+    integral_image /= integral_image.at<float>(display_height - 1, display_width - 1);
+
+    cv::namedWindow("Integral Image", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Integral Image", integral_image);
+
+    cv::waitKey(0);
+
+}
+
 int main(int argc, const char* argv[]) {
-    ex2();
+    exercise2();
     return 0;
 }
