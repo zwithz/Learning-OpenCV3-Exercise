@@ -87,7 +87,29 @@ void ex2() {
     waitKey(0);
 }
 
+/**
+ * Example 11-3
+ * Log-polar transform example
+ */
+void ex3() {
+    Mat src = imread("../assets/img/ChongQing1.png", 1);
+    if (src.empty()) return;
+
+    double M = 10;
+
+    Mat dst(src.size(), src.type()), src2(src.size(), src.type());
+
+    logPolar(src, dst, Point2f(src.cols * 0.5f, src.rows * 0.5f), M, INTER_LINEAR | WARP_FILL_OUTLIERS);
+
+    logPolar(dst, src2, Point2f(src.cols * 0.5f, src.rows * 0.5f), M, INTER_LINEAR | WARP_INVERSE_MAP);
+
+    imshow("log-polar", dst);
+    imshow("inverse log-polar", src2);
+
+    waitKey(0);
+}
+
 int main(int argc, const char* argv[]) {
-    ex2();
+    ex3();
     return 0;
 }
