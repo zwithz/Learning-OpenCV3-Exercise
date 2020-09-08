@@ -135,7 +135,44 @@ void exercise1() {
     waitKey(0);
 }
 
+/**
+ * Exercise 11-2
+ * Look at the diagrams of how the log-polar function transforms
+ * a square into a wavy line.
+ *   a. Draw the log-polar results if the log-polar center point
+ *      were sitting on one of the corners of the square.
+ *   b. What would a circle look like in a log-polar transform
+ *      if the center point were inside the circle and close to
+ *      the edge?
+ *   c. Draw what the transform would look like if the center
+ *      point were sitting just outside of the circle.
+ */
+void exercise2() {
+    // a
+    Mat srcA(512, 512, CV_8UC1);
+    Point leftTop(100, 100), rightBottom(412, 412);
+    rectangle(srcA, leftTop, rightBottom, Scalar(255, 255, 255));
+    Mat dstA(srcA.size(), srcA.type());
+    imshow("Exercise 11-2 srcA", srcA);
+    logPolar(srcA, dstA, Point2f(412.f, 412.f), 50.00, INTER_LINEAR);
+    imshow("Exercise 11-2 a", dstA);
+
+    // b
+    Mat srcB(512, 512, CV_8UC1);
+    circle(srcB, Point(256, 256), 100, Scalar(255, 255, 255));
+    imshow("Exercise 11-2 srcB", srcB);
+    Mat dstB(srcB.size(), srcB.type());
+    logPolar(srcB, dstB, Point2f(170.f, 170.f), 50.00, INTER_LINEAR);
+    imshow("Exercise 11-2 b", dstB);
+
+    // c
+    Mat dstC(srcB.size(), srcB.type());
+    logPolar(srcB, dstC, Point2f(100.f, 100.f), 50.00, INTER_LINEAR);
+    imshow("Exercise 11-2 c", dstC);
+    waitKey(0);
+}
+
 int main(int argc, const char* argv[]) {
-    exercise1();
+    exercise2();
     return 0;
 }
