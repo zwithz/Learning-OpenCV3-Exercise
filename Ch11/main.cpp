@@ -109,7 +109,33 @@ void ex3() {
     waitKey(0);
 }
 
+/**
+ * Exercise 11-1
+ * Find and load a picture of a face where the face is frontal,
+ * has eyes open, and takes up most or all of the image area.
+ * Write code to find the pupils of the eyes.
+ */
+void exercise1() {
+    Mat src = imread("../assets/img/front_face.jpg");
+    if (src.empty()) return;
+
+    Mat gray, tmp, dst;
+    cvtColor(src, gray, COLOR_BGR2GRAY);
+    // Laplacian pyramids
+    pyrDown(gray, tmp);
+    pyrUp(tmp, tmp);
+    tmp = gray - tmp;
+    threshold(tmp, dst, 85.f, 255.f, THRESH_BINARY);
+    imshow("Exercise 11-1 two pupils", dst);
+    double minPixelValue, maxPixelValue;
+    Point minPixelPoint, maxPixelPoint;
+    minMaxLoc(tmp, &minPixelValue, &maxPixelValue, &minPixelPoint, &maxPixelPoint);
+    circle(src, maxPixelPoint, 10, Scalar(255, 255, 255), 2);
+    imshow("Exercise 11-1", src);
+    waitKey(0);
+}
+
 int main(int argc, const char* argv[]) {
-    ex3();
+    exercise1();
     return 0;
 }
