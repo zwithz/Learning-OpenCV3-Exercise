@@ -57,7 +57,31 @@ void ex1() {
     waitKey(0);
 }
 
+/**
+ * Example 12-2
+ * Using cv::HoughCircles() to return a sequence of circles
+ * found in a grayscale image
+ */
+void ex2() {
+    Mat src, image;
+    src = imread("../assets/img/zju.png", 1);
+    if (src.empty()) return;
+
+    cvtColor(src, image, COLOR_BGR2GRAY);
+    GaussianBlur(image, image, Size(5, 5), 0, 0);
+
+    vector<Vec3f> circles;
+    HoughCircles(image, circles, HOUGH_GRADIENT, 2, image.cols / 2);
+
+    for (size_t i = 0; i < circles.size(); i++) {
+        circle(src, Point(cvRound(circles[i][0]), cvRound(circles[i][1])), cvRound(circles[i][2]), Scalar(0, 0, 255), 2, LINE_AA);
+    }
+
+    imshow("Hough Circles", src);
+    waitKey(0);
+}
+
 int main(int argc, const char* argv[]) {
-    ex1();
+    ex2();
     return 0;
 }
