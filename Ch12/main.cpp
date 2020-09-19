@@ -111,7 +111,40 @@ void exercise1() {
     waitKey(0);
 }
 
+/**
+ * Exercise 12-2
+ * Load an image containing clear lines and circles such as a side
+ * view of a bicycle. Use the Hough line and Hough circle calls and
+ * see how they respond to your image.
+ */
+void exercise2() {
+    Mat src = imread("../assets/img/bicycle.png");
+    if (src.empty()) return;
+    imshow("bicycle", src);
+    Mat edges, dst;
+    Canny(src, edges, 50, 200);
+    cvtColor(edges, dst, COLOR_GRAY2BGR);
+    vector<Vec2f> lines;
+    vector<Vec3f> circles;
+    HoughLines(edges, lines, 1, CV_PI / 180, 200);
+    for (size_t i = 0; i < lines.size(); i++) {
+        double rho = lines[i][0], theta = lines[i][1];
+        Point p1, p2;
+        double a = cos(theta), b = sin(theta);
+        double x0 = a * rho, y0 = b * rho;
+        p1.x = cvRound(x0 + 1000 * (-b));
+        p1.y = cvRound(y0 + 1000 * a);
+        p2.x = cvRound(x0 - 1000 * (-b));
+        p2.y = cvRound(y0 - 1000 * a);
+        line(dst, p1, p2, Scalar(0, 0, 255), 1, LINE_AA);
+    }
+    imshow("lines", dst);
+    waitKey(0);
+
+    // HoughCircles(src, circles, <#int method#>, <#double dp#>, <#double minDist#>)
+}
+
 int main(int argc, const char* argv[]) {
-    exercise1();
+    exercise2();
     return 0;
 }
