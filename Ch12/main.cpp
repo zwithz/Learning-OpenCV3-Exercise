@@ -81,7 +81,37 @@ void ex2() {
     waitKey(0);
 }
 
+/**
+ * Exercise 12-1
+ * In this exercise, we learn to experiment with parameters by setting good
+ * low Thresh and highThresh values in cv::Canny(). Load an image with suitably
+ * interesting line structures. We’ll use three different high:low threshold
+ * settings of 1.5:1, 2.75:1, and 4:1.
+ *   a. Report what you see with a high setting of less than 50.
+ *   b. Report what you see with a high setting between 50 and 100.
+ *   c. Report what you see with a high setting between 100 and 150.
+ *   d. Report what you see with a high setting between 150 and 200.
+ *   e. Report what you see with a high setting between 200 and 250.
+ *   f. Summarize your results and explain what happens as best you can.
+ */
+void exercise1() {
+    Mat src = imread("../assets/img/ChongQing1.png");
+    if (src.empty()) return;
+    double high = 230;
+    Mat dst1, dst2, dst3;
+    // 1.5:1
+    Canny(src, dst1, high / 1.5, high);
+    imshow("1.5:1", dst1);
+    // 2.75:1
+    Canny(src, dst2, high / 2.75, high);
+    imshow("2.75:1", dst2);
+    // 4:1
+    Canny(src, dst3, high / 4, high);
+    imshow("4:1", dst3);
+    waitKey(0);
+}
+
 int main(int argc, const char* argv[]) {
-    ex2();
+    exercise1();
     return 0;
 }
