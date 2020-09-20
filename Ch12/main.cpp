@@ -125,7 +125,6 @@ void exercise2() {
     Canny(src, edges, 50, 200);
     cvtColor(edges, dst, COLOR_GRAY2BGR);
     vector<Vec2f> lines;
-    vector<Vec3f> circles;
     HoughLines(edges, lines, 1, CV_PI / 180, 200);
     for (size_t i = 0; i < lines.size(); i++) {
         double rho = lines[i][0], theta = lines[i][1];
@@ -139,9 +138,22 @@ void exercise2() {
         line(dst, p1, p2, Scalar(0, 0, 255), 1, LINE_AA);
     }
     imshow("lines", dst);
-    waitKey(0);
 
-    // HoughCircles(src, circles, <#int method#>, <#double dp#>, <#double minDist#>)
+    Mat gray;
+    cvtColor(src, gray, COLOR_BGR2GRAY);
+    medianBlur(gray, gray, 5);
+    vector<Vec3f> circles;
+    HoughCircles(gray, circles, HOUGH_GRADIENT, 1, gray.rows / 16, 100, 30, 100, 160);
+
+    for (size_t i = 0; i < circles.size(); i++) {
+        Vec3i c = circles[i];
+        Point center = Point(c[0], c[1]);
+        circle(src, center, 1, Scalar(0, 100, 100), 3, LINE_AA);
+        circle(src, center, c[2], Scalar(255, 0, 255), 3, LINE_AA);
+    }
+
+    imshow("circles", src);
+    waitKey(0);
 }
 
 int main(int argc, const char* argv[]) {
